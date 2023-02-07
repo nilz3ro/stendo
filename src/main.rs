@@ -13,10 +13,12 @@ fn main() -> Result<(), StendoError> {
 
     let metadata = get_metadata_from_file(&cli.metadata_file)?;
 
-    for i in 0..cli.num {
+    // TODO: parallelize this
+    for i in cli.offset..cli.num + cli.offset {
         let new_metadata = overwrite_metadata_with_index(&metadata, i as usize)?;
-        write_metadata_to_json_file(&new_metadata, &cli.out_dir, i as usize)?;
-        copy_image_file(&cli.image_file, &cli.out_dir, i as usize)?;
+
+        write_metadata_to_json_file(&cli, &new_metadata, i as usize)?;
+        copy_image_file(&cli, i as usize)?;
     }
 
     Ok(())
